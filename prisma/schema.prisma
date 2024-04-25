@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum userType {
+  ADMIN    @map("Admin")
+  CUSTOMER @map("Cliente")
+}
+
+model User {
+  id        String   @id @unique @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  type      userType
+  cliente   Client?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Client {
+  id        String   @id @unique @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  fullName  String
+  contact   String
+  address   String   @db.Text
+  status    Boolean
+  orders    Order[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Product {
+  id            String      @id @unique @default(uuid())
+  name          String
+  description   String      @db.Text
+  price         Decimal
+  stockQuantity Int
+  orderItems    OrderItem[]
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+}
+
+enum OrderStatus {
+  DELIVERED      @map("Entregue")
+  DISPATCHED     @map("Despachado")
+  IN_PREPARATION @map("Em preparação")
+  RECEIVED       @map("Recebido")
+}
+
+model Order {
+  id          String      @id @unique @default(uuid())
+  client      Client      @relation(fields: [clientId], references: [id])
+  clientId    String
+  orderStatus OrderStatus
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+}
+
+model OrderItem {
+  id        String   @id @unique @default(uuid())
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+  unitPrice Decimal
+  subtotal  Decimal
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model SalesReport {
+  id           String   @id @unique @default(uuid())
+  period       DateTime
+  salesTotal   Decimal
+  soldProducts Int
+  filePath     String
+}
