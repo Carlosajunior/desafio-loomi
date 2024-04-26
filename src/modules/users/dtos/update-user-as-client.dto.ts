@@ -1,17 +1,7 @@
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator';
 
-export class UpdateUserDTO {
-  @ApiPropertyOptional({
-    title: 'id',
-    type: String,
-    required: true,
-    description: 'Id of user to be deleted.',
-  })
-  @IsOptional()
-  @IsUUID()
-  id: string;
-
+export class UpdateUserAsClientDTO {
   @ApiPropertyOptional({
     title: 'email',
     type: String,
