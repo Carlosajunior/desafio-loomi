@@ -11,7 +11,11 @@ export class MailService {
         to: email,
         from: process.env.MAIL_FROM,
         subject: subject,
-        html: `<h3 style="color: black">${message}</h3>`,
+        html: `<body>
+              <p>Este e-mail é para confirmar o seu cadastro na plataforma. Para ativar sua conta clique no link a seguir:</p>
+              <p><a href="${message}">Ativar minha conta</a></p>
+              </body>
+              </html>`,
       });
     } catch (error) {
       throw new BadRequestException(error);

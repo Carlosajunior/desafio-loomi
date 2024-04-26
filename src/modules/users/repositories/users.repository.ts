@@ -5,6 +5,7 @@ import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { hashPassword } from 'src/utils/bcrypt.utils';
+import { ConfirmSingUpDTO } from '../dtos/confirm-singn-up.dto';
 @Injectable()
 export class UserRepository {
   prisma = new PrismaClient();
@@ -56,5 +57,18 @@ export class UserRepository {
         id: data.id,
       },
     });
+  }
+
+  async confirmSingUp(data: ConfirmSingUpDTO) {
+    try {
+      return await this.prisma.user.update({
+        where: { id: data.id },
+        data: {
+          status: true,
+        },
+      });
+    } catch (error) {
+      return new NotAcceptableException(error);
+    }
   }
 }
