@@ -17,6 +17,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './modules/authentication/guards/authentication.guard';
 import { JwtService } from '@nestjs/jwt';
 import { UserAccessLevelMiddleware } from './modules/authentication/middlewares/user-acess.middleware';
+import { CustomersModule } from './modules/customers/customers.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -42,6 +43,7 @@ require('dotenv').config();
     UsersModule,
     PrismaModule,
     AuthenticationModule,
+    CustomersModule,
   ],
   controllers: [AppController],
   providers: [
@@ -59,6 +61,8 @@ export class AppModule implements NestModule {
       .forRoutes(
         { path: '/users', method: RequestMethod.DELETE },
         { path: '/users', method: RequestMethod.POST },
+        { path: '/customers/admin', method: RequestMethod.DELETE },
+        { path: '/customers/admin', method: RequestMethod.PATCH },
       );
   }
 }

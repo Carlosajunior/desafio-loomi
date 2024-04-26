@@ -3,8 +3,9 @@ import { PrismaClient } from '@prisma/client';
 import { UpdateUserDTO } from '../dtos/update-ser.dto';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
-import { NotAcceptableException } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 
+@Injectable()
 export class UserRepository {
   prisma = new PrismaClient();
 
@@ -17,7 +18,7 @@ export class UserRepository {
   }
 
   async findUserByEmail(data: FindUserByEmailDTO) {
-    return await this.prisma.user.findUniqueOrThrow({
+    return await this.prisma.user.findUnique({
       where: {
         email: data.email,
       },
