@@ -1,8 +1,8 @@
 -- CreateEnum
-CREATE TYPE "userType" AS ENUM ('Admin', 'Cliente');
+CREATE TYPE "userType" AS ENUM ('Administrador', 'Cliente');
 
 -- CreateEnum
-CREATE TYPE "OrderStatus" AS ENUM ('Entregue', 'Despachado', 'Em preparação', 'Recebido');
+CREATE TYPE "OrderStatus" AS ENUM ('Entregue', 'Despachado', 'Em_preparacao', 'Recebido');
 
 -- CreateTable
 CREATE TABLE "User" (

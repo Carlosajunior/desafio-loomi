@@ -7,74 +7,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum userType {
-  ADMIN    @map("Admin")
-  CUSTOMER @map("Cliente")
-}
-
 model User {
   id        String   @id @unique @default(uuid())
   name      String
   email     String   @unique
   password  String
   type      userType
-  cliente   Client?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  cliente   Client?
 }
 
 model Client {
   id        String   @id @unique @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
   userId    String   @unique
   fullName  String
   contact   String
-  address   String   @db.Text
+  address   String
   status    Boolean
-  orders    Order[]
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id])
+  orders    Order[]
 }
 
 model Product {
   id            String      @id @unique @default(uuid())
   name          String
-  description   String      @db.Text
+  description   String
   price         Decimal
   stockQuantity Int
-  orderItems    OrderItem[]
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")
-}
-
-enum OrderStatus {
-  DELIVERED      @map("Entregue")
-  DISPATCHED     @map("Despachado")
-  IN_PREPARATION @map("Em preparação")
-  RECEIVED       @map("Recebido")
+  orderItems    OrderItem[]
 }
 
 model Order {
   id          String      @id @unique @default(uuid())
-  client      Client      @relation(fields: [clientId], references: [id])
   clientId    String
   orderStatus OrderStatus
-  orderItems  OrderItem[]
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
+  client      Client      @relation(fields: [clientId], references: [id])
+  orderItems  OrderItem[]
 }
 
 model OrderItem {
   id        String   @id @unique @default(uuid())
-  order     Order    @relation(fields: [orderId], references: [id])
   orderId   String
-  product   Product  @relation(fields: [productId], references: [id])
   productId String
   quantity  Int
   unitPrice Decimal
   subtotal  Decimal
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model SalesReport {
@@ -83,4 +71,16 @@ model SalesReport {
   salesTotal   Decimal
   soldProducts Int
   filePath     String
+}
+
+enum userType {
+  Administrador
+  Cliente
+}
+
+enum OrderStatus {
+  Entregue
+  Despachado
+  Em_preparacao
+  Recebido
 }
