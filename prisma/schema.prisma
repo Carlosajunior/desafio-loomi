@@ -15,6 +15,7 @@ model User {
   type      userType
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
+  status    Boolean   @default(false)
   cliente   Customer?
 }
 

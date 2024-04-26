@@ -7,6 +7,9 @@ import {
   UseGuards,
   Request,
   Post,
+  Query,
+  ValidationPipe,
+  Get,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { AuthGuard } from 'src/modules/authentication/guards/authentication.guard';
@@ -16,11 +19,33 @@ import { CreateUserDTO } from '../dtos/create-user.dto';
 import { UpdateUserAsClientDTO } from '../dtos/update-user-as-client.dto';
 import { CreateUserAsClientDTO } from '../dtos/create-user-as-client.dto';
 import { userType } from '@prisma/client';
+import { ConfirmSingUpDTO } from '../dtos/confirm-singn-up.dto';
+import { IsPublic } from 'src/modules/authentication/decorators/is-public.decorator';
 
 @Controller('users')
 @UseGuards(AuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @IsPublic()
+  @Get('confirm-signup')
+  async confirmSignUp(
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: { enableImplicitConversion: true },
+        forbidNonWhitelisted: true,
+      }),
+    )
+    data: ConfirmSingUpDTO,
+  ) {
+    try {
+      await this.usersService.confirmSignUp(data);
+      return 'Cadastro confirmado.';
+    } catch (error) {
+      return new BadRequestException(error);
+    }
+  }
 
   @Post('admin')
   async createUser(@Body() createUserDTO: CreateUserDTO) {

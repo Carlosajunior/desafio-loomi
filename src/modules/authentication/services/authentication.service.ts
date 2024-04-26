@@ -21,12 +21,17 @@ export class AuthenticationService {
       const user = await this.userRepository.findUserByEmail({
         email: data.email,
       });
-      if (!compareSync(data.password, user.password))
+      if (!user) return new NotFoundException('Credenciais inválidas.');
+      else if (user && user.status == false)
+        return new NotAcceptableException(
+          'Confirme o cadastro do usuário para pode acessar a plataforma.',
+        );
+      else if (!compareSync(data.password, user.password))
         return new NotAcceptableException('Credenciais inválidas. ');
       user.password = undefined;
       return this.login(user);
     } catch (error) {
-      return new NotFoundException(error.message);
+      return new NotAcceptableException(error.message);
     }
   }
 
