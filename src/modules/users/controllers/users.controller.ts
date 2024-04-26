@@ -41,7 +41,6 @@ export class UsersController {
   @Patch()
   async updateUser(@Body() updateUserDTO: UpdateUserDTO, @Request() req) {
     try {
-      console.log(req.user.type);
       if (req.user.type == 'Cliente') {
         updateUserDTO['id'] = req.user.id;
         return await this.usersService.updateUser(updateUserDTO);

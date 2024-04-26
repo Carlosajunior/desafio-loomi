@@ -14,7 +14,6 @@ export class MailService {
         html: `<h3 style="color: black">${message}</h3>`,
       });
     } catch (error) {
-      console.log(error);
       throw new BadRequestException(error);
     }
   }
