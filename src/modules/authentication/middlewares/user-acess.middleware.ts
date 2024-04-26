@@ -11,14 +11,17 @@ export class UserAccessLevelMiddleware implements NestMiddleware {
   constructor(private jwtService: JwtService) {}
 
   async use(request: Request, res: Response, next: NextFunction) {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    if (type != 'Bearer')
-      throw new NotAcceptableException('Invalid type of token.');
-    const payload = await this.jwtService.verifyAsync(token, {
-      secret: process.env.JWT_SECRET,
-    });
-    if (payload.type != 'ADMIN')
-      throw new NotAcceptableException('User isn`t an administrator.');
-    next();
+    try {
+      const [type, token] = request.headers.authorization?.split(' ') ?? [];
+      if (type != 'Bearer')
+        throw new NotAcceptableException('Invalid type of token.');
+      const payload = await this.jwtService.decode(token);
+      console.log(payload);
+      if (payload.type != 'ADMIN')
+        throw new NotAcceptableException('User isn`t an administrator.');
+      next();
+    } catch (error) {
+      next(new NotAcceptableException(error));
+    }
   }
 }
