@@ -1,5 +1,5 @@
 import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
-import { PrismaClient, userType } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
