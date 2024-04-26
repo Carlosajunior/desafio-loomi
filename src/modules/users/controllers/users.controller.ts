@@ -3,7 +3,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   Patch,
   UseGuards,
   Request,
@@ -12,24 +11,18 @@ import {
 import { UsersService } from '../services/users.service';
 import { AuthGuard } from 'src/modules/authentication/guards/authentication.guard';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
-import { UpdateUserDTO } from '../dtos/update-ser.dto';
+import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
+import { UpdateUserAsClientDTO } from '../dtos/update-user-as-client.dto';
+import { CreateUserAsClientDTO } from '../dtos/create-user-as-client.dto';
+import { userType } from '@prisma/client';
 
 @Controller('users')
 @UseGuards(AuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  async getUser() {
-    try {
-      return 'funcionou';
-    } catch (error) {
-      return new BadRequestException(error);
-    }
-  }
-
-  @Post()
+  @Post('admin')
   async createUser(@Body() createUserDTO: CreateUserDTO) {
     try {
       return await this.usersService.createUser(createUserDTO);
@@ -38,13 +31,38 @@ export class UsersController {
     }
   }
 
-  @Patch()
-  async updateUser(@Body() updateUserDTO: UpdateUserDTO, @Request() req) {
+  @Post()
+  async createUserAsClient(
+    @Body() createUserAsClientDTO: CreateUserAsClientDTO,
+  ) {
     try {
-      if (req.user.type == 'Cliente') {
-        updateUserDTO['id'] = req.user.id;
-        return await this.usersService.updateUser(updateUserDTO);
-      }
+      return await this.usersService.createUser({
+        ...createUserAsClientDTO,
+        type: userType.Cliente,
+      });
+    } catch (error) {
+      return new BadRequestException(error);
+    }
+  }
+
+  @Patch()
+  async updateUser(
+    @Body() updateUserAsClientDTO: UpdateUserAsClientDTO,
+    @Request() req,
+  ) {
+    try {
+      return await this.usersService.updateUser({
+        ...updateUserAsClientDTO,
+        id: req.user.id,
+      });
+    } catch (error) {
+      return new BadRequestException(error);
+    }
+  }
+
+  @Patch('admin')
+  async updateUserAsAdmin(@Body() updateUserDTO: UpdateUserDTO) {
+    try {
       return await this.usersService.updateUser(updateUserDTO);
     } catch (error) {
       return new BadRequestException(error);
@@ -52,6 +70,15 @@ export class UsersController {
   }
 
   @Delete()
+  async deleteUserAsClient(@Request() req) {
+    try {
+      return await this.usersService.deleteUser({ id: req.user.id });
+    } catch (error) {
+      return new BadRequestException(error);
+    }
+  }
+
+  @Delete('admin')
   async deleteUser(@Body() data: DeleteUserDTO) {
     try {
       return await this.usersService.deleteUser(data);

@@ -59,8 +59,9 @@ export class AppModule implements NestModule {
       .apply(UserAccessLevelMiddleware)
       .exclude(/*{ path: '/authentication/login', method: RequestMethod.POST }*/)
       .forRoutes(
-        { path: '/users', method: RequestMethod.DELETE },
-        { path: '/users', method: RequestMethod.POST },
+        { path: '/users/admin', method: RequestMethod.DELETE },
+        { path: '/users/admin', method: RequestMethod.POST },
+        { path: '/users/admin', method: RequestMethod.PATCH },
         { path: '/customers/admin', method: RequestMethod.DELETE },
         { path: '/customers/admin', method: RequestMethod.PATCH },
       );

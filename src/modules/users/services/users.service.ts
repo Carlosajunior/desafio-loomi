@@ -1,9 +1,8 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { UserRepository } from '../repositories/users.repository';
-import { UpdateUserDTO } from '../dtos/update-ser.dto';
+import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
-
 @Injectable()
 export class UsersService {
   constructor(private readonly userRepository: UserRepository) {}
@@ -25,6 +24,15 @@ export class UsersService {
 
   async updateUser(updateUserDTO: UpdateUserDTO) {
     try {
+      if (updateUserDTO.email) {
+        const user = await this.userRepository.findUserByEmail({
+          email: updateUserDTO.email,
+        });
+        if (user)
+          return new NotAcceptableException(
+            'Já há um usuário cadastrado com esse e-mail.',
+          );
+      }
       return await this.userRepository.updateUserById(updateUserDTO);
     } catch (error) {
       return new NotAcceptableException(error);

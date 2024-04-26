@@ -1,17 +1,25 @@
 import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
 import { PrismaClient } from '@prisma/client';
-import { UpdateUserDTO } from '../dtos/update-ser.dto';
+import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { Injectable, NotAcceptableException } from '@nestjs/common';
-
+import { hashPassword } from 'src/utils/bcrypt.utils';
 @Injectable()
 export class UserRepository {
   prisma = new PrismaClient();
 
   async createUser(data: CreateUserDTO) {
     try {
-      return await this.prisma.user.create({ data: { ...data } });
+      data.password = hashPassword(data.password);
+      return await this.prisma.user.create({
+        data: {
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          type: data.type,
+        },
+      });
     } catch (error) {
       return new NotAcceptableException(error);
     }
