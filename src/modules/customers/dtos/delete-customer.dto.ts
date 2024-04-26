@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsUUID } from 'class-validator';
 
-export class DeleteUserDTO {
+export class DeleteCustomerDTO {
   @ApiProperty({
     title: 'id',
     type: String,
     required: true,
-    description: 'Id of the user to be deleted.',
+    description: 'Id of customer the to be deleted.',
   })
   @IsNotEmpty()
   @IsUUID()

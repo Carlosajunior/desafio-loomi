@@ -8,23 +8,23 @@ datasource db {
 }
 
 model User {
-  id        String   @id @unique @default(uuid())
+  id        String    @id @unique @default(uuid())
   name      String
-  email     String   @unique
+  email     String    @unique
   password  String
   type      userType
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  cliente   Client?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  cliente   Customer?
 }
 
-model Client {
+model Customer {
   id        String   @id @unique @default(uuid())
   userId    String   @unique
   fullName  String
   contact   String
   address   String
-  status    Boolean
+  status    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   user      User     @relation(fields: [userId], references: [id])
@@ -48,7 +48,7 @@ model Order {
   orderStatus OrderStatus
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
-  client      Client      @relation(fields: [clientId], references: [id])
+  client      Customer    @relation(fields: [clientId], references: [id])
   orderItems  OrderItem[]
 }
 
