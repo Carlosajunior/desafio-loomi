@@ -13,11 +13,11 @@ export class UserAccessLevelMiddleware implements NestMiddleware {
   async use(request: Request, res: Response, next: NextFunction) {
     try {
       const [type, token] = request.headers.authorization?.split(' ') ?? [];
+      if (!type) throw new NotAcceptableException('JWT Token missing.');
       if (type != 'Bearer')
         throw new NotAcceptableException('Invalid type of token.');
       const payload = await this.jwtService.decode(token);
-      console.log(payload);
-      if (payload.type != 'ADMIN')
+      if (payload.type != 'Administrador')
         throw new NotAcceptableException('User isn`t an administrator.');
       next();
     } catch (error) {

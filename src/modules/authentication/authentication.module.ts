@@ -14,7 +14,7 @@ import { UserRepository } from '../users/repositories/users.repository';
     ConfigModule.forRoot(),
     JwtModule.register({
       privateKey: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [AuthenticationController],
