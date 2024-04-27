@@ -5,11 +5,11 @@ import {
 } from '@nestjs/common';
 import { CustomersRepository } from '../repositories/customers.repository';
 import { CreateCustomerDTO } from '../dtos/create-customer.dto';
-import { SearchCustomerByNameDTO } from '../dtos/search-customer-by-name.dto';
 import { UpdateCustomerDTO } from '../dtos/update-customer-client.dto';
 import { DeleteCustomerDTO } from '../dtos/delete-customer.dto';
-import { CustomerModel } from '../models/customer.model';
 import { UpdateCustomerAsAdminDTO } from '../dtos/update-customer-as-admin.dto';
+import { GetCustomerDTO } from '../dtos/get-customer.dto';
+import { SearchCustomerDTO } from '../dtos/search-customer.dto';
 
 @Injectable()
 export class CustomersService {
@@ -23,15 +23,40 @@ export class CustomersService {
     }
   }
 
-  async searchCustomerByName(data: SearchCustomerByNameDTO) {
+  async detailCustomer(data: GetCustomerDTO) {
     try {
-      const customers =
-        await this.customersRepository.searchCustomerByName(data);
-      if ((customers as unknown as Array<CustomerModel>).length < 1)
-        return new NotFoundException(
-          'Não há clientes como esse nome cadastrados. ',
+      return await this.customersRepository.detailCustomer(data);
+    } catch (error) {
+      return new NotFoundException(error);
+    }
+  }
+
+  async searchCustomers(data: SearchCustomerDTO) {
+    try {
+      let customersSQLQuery = `SELECT * FROM "Customer"`;
+      const conditions: string[] = [];
+
+      if (data.fullName)
+        conditions.push(`LOWER("fullName") LIKE LOWER('${data.fullName}%')`);
+      if (data.contact) {
+        conditions.push(`LOWER("contact") LIKE LOWER('%${data.contact}%')`);
+      }
+      if (data.address) conditions.push(`"address" = ${data.address}`);
+      if (data.date_start && data.date_end)
+        conditions.push(
+          `"created_at" BETWEEN '${data.date_start}' AND '${data.date_end}'`,
         );
-      return { customers };
+
+      conditions.push(`"status" = ${data.status}`);
+
+      if (conditions.length > 0)
+        customersSQLQuery += ' WHERE ' + conditions.join(' AND ');
+
+      customersSQLQuery =
+        customersSQLQuery +
+        ` LIMIT ${data.records_per_page} OFFSET ${(data.page - 1) * data.records_per_page}`;
+
+      return await this.customersRepository.listCustomers(customersSQLQuery);
     } catch (error) {
       return new NotFoundException(error);
     }

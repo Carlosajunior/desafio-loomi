@@ -31,7 +31,7 @@ export class AuthenticationService {
       user.password = undefined;
       return this.login(user);
     } catch (error) {
-      return new NotAcceptableException(error.message);
+      return new NotAcceptableException(error);
     }
   }
 

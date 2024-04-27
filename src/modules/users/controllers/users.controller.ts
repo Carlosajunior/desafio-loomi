@@ -21,6 +21,8 @@ import { CreateUserAsClientDTO } from '../dtos/create-user-as-client.dto';
 import { userType } from '@prisma/client';
 import { ConfirmSingUpDTO } from '../dtos/confirm-singn-up.dto';
 import { IsPublic } from 'src/modules/authentication/decorators/is-public.decorator';
+import { SearchUserDTO } from '../dtos/search-user.dto';
+import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -70,6 +72,42 @@ export class UsersController {
     }
   }
 
+  @Get()
+  async searchUserByEmail(
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: { enableImplicitConversion: true },
+        forbidNonWhitelisted: true,
+      }),
+    )
+    query: FindUserByEmailDTO,
+  ) {
+    try {
+      return await this.usersService.searchUserByEmail(query);
+    } catch (error) {
+      return new BadRequestException(error);
+    }
+  }
+
+  @Get('search')
+  async searchUser(
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: { enableImplicitConversion: true },
+        forbidNonWhitelisted: true,
+      }),
+    )
+    query: SearchUserDTO,
+  ) {
+    try {
+      return await this.usersService.searchUsers(query);
+    } catch (error) {
+      return new BadRequestException(error);
+    }
+  }
+
   @Patch()
   async updateUser(
     @Body() updateUserAsClientDTO: UpdateUserAsClientDTO,
@@ -95,7 +133,7 @@ export class UsersController {
   }
 
   @Delete()
-  async deleteUserAsClient(@Request() req) {
+  async deleteUser(@Request() req) {
     try {
       return await this.usersService.deleteUser({ id: req.user.id });
     } catch (error) {
@@ -104,7 +142,7 @@ export class UsersController {
   }
 
   @Delete('admin')
-  async deleteUser(@Body() data: DeleteUserDTO) {
+  async deleteUserAsAdmin(@Body() data: DeleteUserDTO) {
     try {
       return await this.usersService.deleteUser(data);
     } catch (error) {

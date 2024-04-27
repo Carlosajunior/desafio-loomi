@@ -3,12 +3,12 @@ import {
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Customer, PrismaClient } from '@prisma/client';
 import { CreateCustomerDTO } from '../dtos/create-customer.dto';
-import { SearchCustomerByNameDTO } from '../dtos/search-customer-by-name.dto';
 import { UpdateCustomerDTO } from '../dtos/update-customer-client.dto';
 import { DeleteCustomerDTO } from '../dtos/delete-customer.dto';
 import { UpdateCustomerAsAdminDTO } from '../dtos/update-customer-as-admin.dto';
+import { GetCustomerDTO } from '../dtos/get-customer.dto';
 
 @Injectable()
 export class CustomersRepository {
@@ -33,13 +33,23 @@ export class CustomersRepository {
     }
   }
 
-  async searchCustomerByName(data: SearchCustomerByNameDTO) {
+  async detailCustomer(data: GetCustomerDTO) {
     try {
-      return await this.prisma.customer.findMany({
-        where: { fullName: { startsWith: data.fullName, mode: 'insensitive' } },
+      return await this.prisma.customer.findUnique({
+        where: { id: data.id },
       });
     } catch (error) {
       return new NotFoundException(error);
+    }
+  }
+
+  async listCustomers(customersSQLQuery: string) {
+    try {
+      const customers =
+        await this.prisma.$queryRawUnsafe<Customer[]>(customersSQLQuery);
+      return { customers };
+    } catch (error) {
+      return new NotAcceptableException(error);
     }
   }
 

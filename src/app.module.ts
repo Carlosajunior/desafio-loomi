@@ -13,7 +13,6 @@ import { UsersModule } from './modules/users/users.module';
 import { PrismaModule } from 'src/modules/prisma/prisma.module';
 import { AuthenticationModule } from './modules/authentication/authentication.module';
 import { APP_GUARD } from '@nestjs/core';
-//import { JwtAuthGuard } from './modules/authentication/guards/jwt-auth.guard';
 import { AuthGuard } from './modules/authentication/guards/authentication.guard';
 import { JwtService } from '@nestjs/jwt';
 import { UserAccessLevelMiddleware } from './modules/authentication/middlewares/user-acess.middleware';
@@ -57,13 +56,19 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(UserAccessLevelMiddleware)
-      .exclude(/*{ path: '/authentication/login', method: RequestMethod.POST }*/)
       .forRoutes(
         { path: '/users/admin', method: RequestMethod.DELETE },
         { path: '/users/admin', method: RequestMethod.POST },
         { path: '/users/admin', method: RequestMethod.PATCH },
+        { path: '/users/search', method: RequestMethod.GET },
+        { path: '/users/', method: RequestMethod.GET },
         { path: '/customers/admin', method: RequestMethod.DELETE },
         { path: '/customers/admin', method: RequestMethod.PATCH },
+        { path: '/products', method: RequestMethod.POST },
+        { path: '/products', method: RequestMethod.PATCH },
+        { path: '/products', method: RequestMethod.DELETE },
+        { path: '/customers', method: RequestMethod.GET },
+        { path: '/customers/search', method: RequestMethod.GET },
       );
   }
 }

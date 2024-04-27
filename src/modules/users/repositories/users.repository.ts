@@ -1,5 +1,5 @@
 import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
@@ -13,7 +13,7 @@ export class UserRepository {
   async createUser(data: CreateUserDTO) {
     try {
       data.password = hashPassword(data.password);
-      return await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
           name: data.name,
           email: data.email,
@@ -21,6 +21,8 @@ export class UserRepository {
           type: data.type,
         },
       });
+      delete user['password'];
+      return user;
     } catch (error) {
       return new NotAcceptableException(error);
     }
@@ -34,9 +36,21 @@ export class UserRepository {
     });
   }
 
+  async listUsers(usersSQLQuery: string) {
+    try {
+      const users = await this.prisma.$queryRawUnsafe<User[]>(usersSQLQuery);
+      users.forEach((user) => {
+        delete user.password;
+      });
+      return { users };
+    } catch (error) {
+      return new NotAcceptableException(error);
+    }
+  }
+
   async updateUserById(data: UpdateUserDTO) {
     try {
-      return await this.prisma.user.update({
+      const user = await this.prisma.user.update({
         where: {
           id: data.id,
         },
@@ -46,6 +60,8 @@ export class UserRepository {
           password: data.password,
         },
       });
+      delete user['password'];
+      return user;
     } catch (error) {
       return new NotAcceptableException(error);
     }
@@ -59,14 +75,16 @@ export class UserRepository {
     });
   }
 
-  async confirmSingUp(data: ConfirmSingUpDTO) {
+  async confirmSignUp(data: ConfirmSingUpDTO) {
     try {
-      return await this.prisma.user.update({
+      const user = await this.prisma.user.update({
         where: { id: data.id },
         data: {
           status: true,
         },
       });
+      delete user['password'];
+      return user;
     } catch (error) {
       return new NotAcceptableException(error);
     }
