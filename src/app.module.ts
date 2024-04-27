@@ -64,6 +64,9 @@ export class AppModule implements NestModule {
         { path: '/users/admin', method: RequestMethod.PATCH },
         { path: '/customers/admin', method: RequestMethod.DELETE },
         { path: '/customers/admin', method: RequestMethod.PATCH },
+        { path: '/products', method: RequestMethod.POST },
+        { path: '/products', method: RequestMethod.PATCH },
+        { path: '/products', method: RequestMethod.DELETE },
       );
   }
 }
