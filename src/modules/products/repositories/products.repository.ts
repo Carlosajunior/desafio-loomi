@@ -1,8 +1,9 @@
 import { NotAcceptableException } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Product } from '@prisma/client';
 import { CreateProductDTO } from '../dtos/create-product.dto';
 import { UpdateProductDTO } from '../dtos/update-product.dto';
 import { DeleteProductDTO } from '../dtos/delete-product.dto';
+import { GetProductDTO } from '../dtos/get-product';
 
 export class ProductsRepository {
   prisma = new PrismaClient();
@@ -10,6 +11,24 @@ export class ProductsRepository {
   async createProduct(data: CreateProductDTO) {
     try {
       return await this.prisma.product.create({ data: { ...data } });
+    } catch (error) {
+      return new NotAcceptableException(error);
+    }
+  }
+
+  async listProducts(productsSQLQuery: string) {
+    try {
+      const products =
+        await this.prisma.$queryRawUnsafe<Product[]>(productsSQLQuery);
+      return { products };
+    } catch (error) {
+      return new NotAcceptableException(error);
+    }
+  }
+
+  async detailProduct(data: GetProductDTO) {
+    try {
+      return await this.prisma.product.findUnique({ where: { id: data.id } });
     } catch (error) {
       return new NotAcceptableException(error);
     }

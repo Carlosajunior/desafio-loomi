@@ -1,4 +1,8 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserRepository } from '../repositories/users.repository';
 import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
@@ -6,6 +10,8 @@ import { CreateUserDTO } from '../dtos/create-user.dto';
 import { ConfirmSingUpDTO } from '../dtos/confirm-singn-up.dto';
 import { MailService } from 'src/modules/email-service/email-service';
 import { UserModel } from '../models/user.model';
+import { SearchUserDTO } from '../dtos/search-user.dto';
+import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -15,7 +21,7 @@ export class UsersService {
 
   async confirmSignUp(data: ConfirmSingUpDTO) {
     try {
-      return await this.userRepository.confirmSingUp(data);
+      return await this.userRepository.confirmSignUp(data);
     } catch (error) {
       return new NotAcceptableException(error);
     }
@@ -38,6 +44,46 @@ export class UsersService {
       return 'Confirme o cadastro acessando o link que foi enviado para o e-mail informado.';
     } catch (error) {
       return new NotAcceptableException(error);
+    }
+  }
+
+  async searchUserByEmail(data: FindUserByEmailDTO) {
+    try {
+      const user = await this.userRepository.findUserByEmail(data);
+      delete user['password'];
+      return user;
+    } catch (error) {
+      return new NotFoundException(error);
+    }
+  }
+
+  async searchUsers(data: SearchUserDTO) {
+    try {
+      let usersSQLQuery = `SELECT * FROM "User"`;
+      const conditions: string[] = [];
+
+      if (data.email) conditions.push(`"email" = '${data.email}'`);
+      if (data.name) {
+        conditions.push(`LOWER("name") LIKE LOWER('${data.name}%')`);
+      }
+      if (data.type) conditions.push(`"type" = '${data.type}'`);
+      if (data.date_start && data.date_end)
+        conditions.push(
+          `"created_at" BETWEEN '${data.date_start}' AND '${data.date_end}'`,
+        );
+
+      conditions.push(`"status" = ${data.status}`);
+
+      if (conditions.length > 0)
+        usersSQLQuery += ' WHERE ' + conditions.join(' AND ');
+
+      usersSQLQuery =
+        usersSQLQuery +
+        ` LIMIT ${data.records_per_page} OFFSET ${(data.page - 1) * data.records_per_page}`;
+
+      return await this.userRepository.listUsers(usersSQLQuery);
+    } catch (error) {
+      return new NotFoundException(error);
     }
   }
 

@@ -13,11 +13,12 @@ import {
 } from '@nestjs/common';
 import { CustomersService } from '../services/customers.service';
 import { CreateCustomerDTO } from '../dtos/create-customer.dto';
-import { SearchCustomerByNameDTO } from '../dtos/search-customer-by-name.dto';
+import { SearchCustomerDTO } from '../dtos/search-customer.dto';
 import { UpdateCustomerDTO } from '../dtos/update-customer-client.dto';
 import { DeleteCustomerDTO } from '../dtos/delete-customer.dto';
 import { AuthGuard } from 'src/modules/authentication/guards/authentication.guard';
 import { UpdateCustomerAsAdminDTO } from '../dtos/update-customer-as-admin.dto';
+import { GetCustomerDTO } from '../dtos/get-customer.dto';
 
 @Controller('customers')
 @UseGuards(AuthGuard)
@@ -34,7 +35,7 @@ export class CustomersController {
   }
 
   @Get()
-  async searchCustomerByName(
+  async getCustomer(
     @Query(
       new ValidationPipe({
         transform: true,
@@ -42,10 +43,28 @@ export class CustomersController {
         forbidNonWhitelisted: true,
       }),
     )
-    query: SearchCustomerByNameDTO,
+    query: GetCustomerDTO,
   ) {
     try {
-      return await this.customersService.searchCustomerByName(query);
+      return await this.customersService.detailCustomer(query);
+    } catch (error) {
+      return new BadRequestException(error);
+    }
+  }
+
+  @Get('search')
+  async searchCustomer(
+    @Query(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: { enableImplicitConversion: true },
+        forbidNonWhitelisted: true,
+      }),
+    )
+    query: SearchCustomerDTO,
+  ) {
+    try {
+      return await this.customersService.searchCustomers(query);
     } catch (error) {
       return new BadRequestException(error);
     }
