@@ -49,7 +49,7 @@ export class OrdersService {
       if (data.clientId) conditions.push(`"clientId" = '${data.clientId}'`);
       if (data.total) conditions.push(`"total" = '${data.total}'`);
       if (data.orderStatus)
-        conditions.push(`"orderStatus" = ${data.orderStatus}`);
+        conditions.push(`"orderStatus" = '${data.orderStatus}'`);
       if (data.date_start && data.date_end)
         conditions.push(
           `"created_at" BETWEEN '${data.date_start}' AND '${data.date_end}'`,
@@ -61,7 +61,6 @@ export class OrdersService {
       OrderSQLQuery =
         OrderSQLQuery +
         ` LIMIT ${data.records_per_page} OFFSET ${(data.page - 1) * data.records_per_page}`;
-
       return await this.ordersRepository.listorders(OrderSQLQuery);
     } catch (error) {
       return new NotFoundException(error);

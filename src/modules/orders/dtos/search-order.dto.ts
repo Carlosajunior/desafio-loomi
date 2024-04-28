@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { OrderStatus } from '@prisma/client';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import {
   IsDateString,
   IsEnum,
@@ -65,9 +65,6 @@ export class SearchOrderDTO {
     description: 'Status of the order.',
   })
   @IsEnum(OrderStatus)
-  @Transform(({ value }) => {
-    return OrderStatus[value];
-  })
   @IsOptional()
   orderStatus?: OrderStatus;
 
