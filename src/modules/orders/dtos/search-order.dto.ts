@@ -1,14 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { OrderStatus } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsDateString,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString,
+  IsUUID,
 } from 'class-validator';
 
-export class SearchProductsDTO {
+export class SearchOrderDTO {
   @ApiProperty({
     title: 'page',
     type: Number,
@@ -56,44 +58,34 @@ export class SearchProductsDTO {
   date_end?: string;
 
   @ApiPropertyOptional({
-    title: 'name',
-    type: String,
+    title: 'orderStatus',
+    type: OrderStatus,
+    enum: OrderStatus,
     required: false,
-    description: 'Product`s name.',
+    description: 'Status of the order.',
   })
+  @IsEnum(OrderStatus)
   @IsOptional()
-  @IsString()
-  name?: string;
+  orderStatus?: OrderStatus;
 
   @ApiPropertyOptional({
-    title: 'description',
-    type: String,
-    required: false,
-    description: 'Product`s description.',
-  })
-  @IsOptional()
-  @IsString()
-  description?: string;
-
-  @ApiPropertyOptional({
-    title: 'price',
+    title: 'total',
     type: Number,
     required: false,
-    description: 'Product`s price.',
+    description: 'Total value of the order` items',
   })
-  @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  price?: number;
+  @IsOptional()
+  total?: number;
 
   @ApiPropertyOptional({
-    title: 'stockQuantity',
-    type: Number,
+    title: 'clientId',
+    type: String,
     required: false,
-    description: 'Product`s stock quantity.',
+    description: 'Id of the customer that issued an order.',
   })
+  @IsUUID()
   @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  stockQuantity?: number;
+  clientId?: string;
 }

@@ -32,7 +32,7 @@ export class ProductsService {
 
   async searchProducts(data: SearchProductsDTO) {
     try {
-      let productsSQLQuery = `SELECT * FROM "Product"`;
+      let productsSQLQuery: string = `SELECT * FROM "Product"`;
       const conditions: string[] = [];
 
       if (data.name)
@@ -41,7 +41,7 @@ export class ProductsService {
         conditions.push(
           `LOWER("description") LIKE LOWER('${data.description}%')`,
         );
-      else if (data.price) conditions.push(`"price" = ${data.price}`);
+      if (data.price) conditions.push(`"price" = ${data.price}`);
       if (data.stockQuantity)
         conditions.push(`"stockQuantity" = ${data.stockQuantity}`);
       if (data.date_start && data.date_end)

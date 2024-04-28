@@ -5,10 +5,10 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString,
+  IsUUID,
 } from 'class-validator';
 
-export class SearchProductsDTO {
+export class SearchOrderItemDTO {
   @ApiProperty({
     title: 'page',
     type: Number,
@@ -56,44 +56,33 @@ export class SearchProductsDTO {
   date_end?: string;
 
   @ApiPropertyOptional({
-    title: 'name',
+    title: 'orderId',
     type: String,
     required: false,
-    description: 'Product`s name.',
+    description: 'Id of the order which the item is related to.',
   })
+  @IsUUID()
   @IsOptional()
-  @IsString()
-  name?: string;
+  orderId?: string;
 
   @ApiPropertyOptional({
-    title: 'description',
+    title: 'productId',
     type: String,
     required: false,
-    description: 'Product`s description.',
+    description: 'Id of the product of this order item.',
   })
+  @IsUUID()
   @IsOptional()
-  @IsString()
-  description?: string;
+  productId?: string;
 
   @ApiPropertyOptional({
-    title: 'price',
+    title: 'quantity',
     type: Number,
     required: false,
-    description: 'Product`s price.',
+    description: 'Quantity of this order item.',
   })
-  @IsOptional()
   @Type(() => Number)
   @IsNumber()
-  price?: number;
-
-  @ApiPropertyOptional({
-    title: 'stockQuantity',
-    type: Number,
-    required: false,
-    description: 'Product`s stock quantity.',
-  })
   @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  stockQuantity?: number;
+  quantity?: number;
 }

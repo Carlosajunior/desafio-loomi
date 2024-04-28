@@ -13,26 +13,26 @@ export class SearchCustomerDTO {
   @ApiProperty({
     title: 'page',
     type: Number,
-    required: false,
+    required: true,
     description:
       'Page parameter for pagination, to define which page wants to retrieve.',
   })
   @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
-  page?: number;
+  page: number;
 
   @ApiProperty({
     title: 'records_per_page',
     type: Number,
-    required: false,
+    required: true,
     description:
       'Records per page parameter, to define how much records should be retrieved when paginating the search.',
   })
   @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
-  records_per_page?: number;
+  records_per_page: number;
 
   @ApiPropertyOptional({
     title: 'date_start',
@@ -43,7 +43,7 @@ export class SearchCustomerDTO {
   })
   @IsOptional()
   @IsDateString()
-  date_start: string;
+  date_start?: string;
 
   @ApiPropertyOptional({
     title: 'date_end',
@@ -54,7 +54,7 @@ export class SearchCustomerDTO {
   })
   @IsOptional()
   @IsDateString()
-  date_end: string;
+  date_end?: string;
 
   @ApiPropertyOptional({
     title: 'fullName',
@@ -64,7 +64,7 @@ export class SearchCustomerDTO {
   })
   @IsOptional()
   @IsString()
-  fullName: string;
+  fullName?: string;
 
   @ApiPropertyOptional({
     title: 'contact',
@@ -74,7 +74,7 @@ export class SearchCustomerDTO {
   })
   @IsOptional()
   @IsString()
-  contact: string;
+  contact?: string;
 
   @ApiPropertyOptional({
     title: 'address',
@@ -84,7 +84,7 @@ export class SearchCustomerDTO {
   })
   @IsOptional()
   @IsString()
-  address: string;
+  address?: string;
 
   @ApiPropertyOptional({
     title: 'status',
@@ -97,5 +97,5 @@ export class SearchCustomerDTO {
     value === 'true' ? true : value === 'false' ? false : value,
   )
   @IsBoolean()
-  status: boolean;
+  status?: boolean;
 }

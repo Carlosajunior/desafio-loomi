@@ -4,7 +4,6 @@ import {
   Controller,
   Delete,
   Patch,
-  UseGuards,
   Request,
   Post,
   Query,
@@ -12,20 +11,18 @@ import {
   Get,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
-import { AuthGuard } from 'src/modules/authentication/guards/authentication.guard';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { UpdateUserAsClientDTO } from '../dtos/update-user-as-client.dto';
 import { CreateUserAsClientDTO } from '../dtos/create-user-as-client.dto';
 import { userType } from '@prisma/client';
-import { ConfirmSingUpDTO } from '../dtos/confirm-singn-up.dto';
+import { ConfirmSingUpDTO } from '../dtos/confirm-sign-up.dto';
 import { IsPublic } from 'src/modules/authentication/decorators/is-public.decorator';
 import { SearchUserDTO } from '../dtos/search-user.dto';
 import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
 
 @Controller('users')
-@UseGuards(AuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

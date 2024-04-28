@@ -16,26 +16,26 @@ export class SearchUserDTO {
   @ApiProperty({
     title: 'page',
     type: Number,
-    required: false,
+    required: true,
     description:
       'Page parameter for pagination, to define which page wants to retrieve.',
   })
   @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
-  page?: number;
+  page: number;
 
   @ApiProperty({
     title: 'records_per_page',
     type: Number,
-    required: false,
+    required: true,
     description:
       'Records per page parameter, to define how much records should be retrieved when paginating the search.',
   })
   @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
-  records_per_page?: number;
+  records_per_page: number;
 
   @ApiPropertyOptional({
     title: 'date_start',
@@ -46,7 +46,7 @@ export class SearchUserDTO {
   })
   @IsOptional()
   @IsDateString()
-  date_start: string;
+  date_start?: string;
 
   @ApiPropertyOptional({
     title: 'date_end',
@@ -57,7 +57,7 @@ export class SearchUserDTO {
   })
   @IsOptional()
   @IsDateString()
-  date_end: string;
+  date_end?: string;
 
   @ApiPropertyOptional({
     title: 'email',
@@ -67,7 +67,7 @@ export class SearchUserDTO {
   })
   @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @ApiPropertyOptional({
     title: 'name',
@@ -77,7 +77,7 @@ export class SearchUserDTO {
   })
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @ApiPropertyOptional({
     title: 'status',
@@ -90,7 +90,7 @@ export class SearchUserDTO {
     value === 'true' ? true : value === 'false' ? false : value,
   )
   @IsBoolean()
-  status: boolean;
+  status?: boolean;
 
   @ApiPropertyOptional({
     title: 'type',
@@ -104,5 +104,5 @@ export class SearchUserDTO {
   @Transform(({ value }) => {
     return userType[value];
   })
-  type: userType;
+  type?: userType;
 }

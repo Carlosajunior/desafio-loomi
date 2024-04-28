@@ -28,7 +28,7 @@ model Customer {
   status    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   orders    Order[]
 }
 
@@ -46,10 +46,11 @@ model Product {
 model Order {
   id          String      @id @unique @default(uuid())
   clientId    String
-  orderStatus OrderStatus
+  orderStatus OrderStatus @default(Em_preparacao)
+  total       Decimal
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
-  client      Customer    @relation(fields: [clientId], references: [id])
+  client      Customer    @relation(fields: [clientId], references: [id], onDelete: Cascade)
   orderItems  OrderItem[]
 }
 
@@ -62,8 +63,8 @@ model OrderItem {
   subtotal  Decimal
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  order     Order    @relation(fields: [orderId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model SalesReport {

@@ -7,11 +7,11 @@ import { UserRepository } from '../repositories/users.repository';
 import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
-import { ConfirmSingUpDTO } from '../dtos/confirm-singn-up.dto';
+import { ConfirmSingUpDTO } from '../dtos/confirm-sign-up.dto';
 import { MailService } from 'src/modules/email-service/email-service';
-import { UserModel } from '../models/user.model';
 import { SearchUserDTO } from '../dtos/search-user.dto';
 import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
+import { User } from '@prisma/client';
 @Injectable()
 export class UsersService {
   constructor(
@@ -39,7 +39,7 @@ export class UsersService {
       const createdUser = await this.userRepository.createUser(createUserDTO);
       await this.sendConfirmationEmail(
         createUserDTO.email,
-        (createdUser as unknown as UserModel).id,
+        (createdUser as unknown as User).id,
       );
       return 'Confirme o cadastro acessando o link que foi enviado para o e-mail informado.';
     } catch (error) {
@@ -59,7 +59,7 @@ export class UsersService {
 
   async searchUsers(data: SearchUserDTO) {
     try {
-      let usersSQLQuery = `SELECT * FROM "User"`;
+      let usersSQLQuery: string = `SELECT * FROM "User"`;
       const conditions: string[] = [];
 
       if (data.email) conditions.push(`"email" = '${data.email}'`);

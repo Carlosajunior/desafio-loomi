@@ -21,40 +21,40 @@ export class UpdateProductDTO {
   @ApiPropertyOptional({
     title: 'name',
     type: String,
-    required: true,
+    required: false,
     description: 'Product`s name.',
   })
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @ApiPropertyOptional({
     title: 'description',
     type: String,
-    required: true,
+    required: false,
     description: 'Product`s description.',
   })
   @IsOptional()
   @IsString()
-  description: string;
+  description?: string;
 
   @ApiPropertyOptional({
     title: 'price',
     type: Number,
-    required: true,
+    required: false,
     description: 'Product`s price.',
   })
   @IsOptional()
   @IsNumber()
-  price: number;
+  price?: number;
 
   @ApiPropertyOptional({
     title: 'stockQuantity',
     type: Number,
-    required: true,
+    required: false,
     description: 'Product`s stock quantity.',
   })
   @IsOptional()
   @IsNumber()
-  stockQuantity: number;
+  stockQuantity?: number;
 }
