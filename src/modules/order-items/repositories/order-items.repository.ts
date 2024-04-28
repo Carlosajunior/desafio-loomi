@@ -54,14 +54,13 @@ export class OrderItemsRepository {
     }
   }
 
-  async updateOrderItem(data: UpdateOrderItemDTO) {
+  async updateOrderItem(data: UpdateOrderItemDTO, subtotal: number) {
     try {
-      const { id, ...parameters } = data;
       return await this.prisma.orderItem.update({
         where: {
-          id: id,
+          id: data.id,
         },
-        data: { ...parameters },
+        data: { quantity: data.quantity, subtotal: subtotal },
       });
     } catch (error) {
       return new NotAcceptableException(error);

@@ -83,16 +83,44 @@ export class OrderItemsService {
 
   async updateOrderItem(data: UpdateOrderItemDTO) {
     try {
+      const currentOrderItem: OrderItem =
+        (await this.orderItemsRepository.detailOrderItem({
+          id: data.id,
+        })) as unknown as OrderItem;
+
+      if (data.quantity == currentOrderItem.quantity)
+        return new NotAcceptableException('Não há alteração nos dados.');
+
+      const unitPrice: number = (await this.getUnitPrice(
+        currentOrderItem.productId,
+      )) as unknown as number;
+
+      let subtotal: number;
+      let increase: boolean;
+      let amount: number;
+
+      if (data.quantity < currentOrderItem.quantity) {
+        amount = (currentOrderItem.quantity - data.quantity) * unitPrice;
+        subtotal = parseFloat(currentOrderItem.subtotal.toString()) - amount;
+        increase = false;
+      } else if (data.quantity > currentOrderItem.quantity) {
+        amount = (data.quantity - currentOrderItem.quantity) * unitPrice;
+        subtotal = parseFloat(currentOrderItem.subtotal.toString()) + amount;
+        increase = true;
+      }
+
       const orderItem: OrderItem =
         (await this.orderItemsRepository.updateOrderItem(
           data,
+          subtotal,
         )) as unknown as OrderItem;
 
       if (data.quantity == 0) await this.deleteOrderItem({ id: data.id });
 
       await this.updateOrderTotal({
-        orderItemId: data.id,
-        quantity: data.quantity,
+        orderId: orderItem.orderId,
+        increase: increase,
+        amount: amount,
       });
       return orderItem;
     } catch (error) {
@@ -147,68 +175,26 @@ export class OrderItemsService {
   }
 
   private async updateOrderTotal(data: {
-    orderItemId?: string;
-    quantity?: number;
-    orderId?: string;
+    amount?: number;
+    orderId: string;
     subtotal?: number;
-    increase?: boolean;
+    increase: boolean;
   }) {
     try {
-      if (data.subtotal && data.orderId) {
-        let total: number = parseFloat(
-          (
-            (await this.orderRepository.detailOrder({
-              id: data.orderId,
-            })) as unknown as Order
-          ).total.toString(),
-        );
-
-        total = data.increase ? total + data.subtotal : total - data.subtotal;
-
-        return await this.orderRepository.updateOrder({
-          id: data.orderId,
-          total: total,
-        });
-      }
-
-      const orderItem: OrderItem =
-        (await this.orderItemsRepository.detailOrderItem({
-          id: data.orderItemId,
-        })) as unknown as OrderItem;
-
-      const unitPrice: number = (await this.getUnitPrice(
-        orderItem.productId,
-      )) as unknown as number;
-
-      const subtotal: number = data.quantity * unitPrice;
-
       let total: number = parseFloat(
         (
           (await this.orderRepository.detailOrder({
-            id: orderItem.orderId,
+            id: data.orderId,
           })) as unknown as Order
         ).total.toString(),
       );
-
-      if (data.quantity < orderItem.quantity) {
-        const valueToDecrease: number =
-          (orderItem.quantity - data.quantity) * unitPrice;
-        total = total - valueToDecrease;
-      } else if (data.quantity > orderItem.quantity) {
-        const valueToIncrease: number =
-          (data.quantity - orderItem.quantity) * unitPrice;
-        total = total + valueToIncrease;
-      }
-
-      await this.orderRepository.updateOrder({
-        id: orderItem.orderId,
+      if (!data.amount)
+        total = data.increase ? total + data.subtotal : total - data.subtotal;
+      else total = data.increase ? total + data.amount : total - data.amount;
+      return await this.orderRepository.updateOrder({
+        id: data.orderId,
         total: total,
       });
-
-      await this.orderItemsRepository.updateOrderItemSubtotal(
-        data.orderItemId,
-        subtotal,
-      );
     } catch (error) {
       return new NotAcceptableException(error);
     }
