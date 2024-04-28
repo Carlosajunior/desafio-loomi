@@ -10,7 +10,7 @@ export class UpdateCustomerDTO {
   })
   @IsOptional()
   @IsUUID()
-  user_id: string;
+  user_id?: string;
 
   @ApiPropertyOptional({
     title: 'fullName',
@@ -20,7 +20,7 @@ export class UpdateCustomerDTO {
   })
   @IsOptional()
   @IsString()
-  fullName: string;
+  fullName?: string;
 
   @ApiPropertyOptional({
     title: 'contact',
@@ -30,7 +30,7 @@ export class UpdateCustomerDTO {
   })
   @IsOptional()
   @IsString()
-  contact: string;
+  contact?: string;
 
   @ApiPropertyOptional({
     title: 'address',
@@ -40,5 +40,5 @@ export class UpdateCustomerDTO {
   })
   @IsOptional()
   @IsString()
-  address: string;
+  address?: string;
 }

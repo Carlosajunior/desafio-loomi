@@ -17,6 +17,9 @@ import { AuthGuard } from './modules/authentication/guards/authentication.guard'
 import { JwtService } from '@nestjs/jwt';
 import { UserAccessLevelMiddleware } from './modules/authentication/middlewares/user-acess.middleware';
 import { CustomersModule } from './modules/customers/customers.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { OrderItemsModule } from './modules/order-items/order-items.module';
+import { ProductsModule } from './modules/products/products.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -43,6 +46,9 @@ require('dotenv').config();
     PrismaModule,
     AuthenticationModule,
     CustomersModule,
+    ProductsModule,
+    OrdersModule,
+    OrderItemsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -69,6 +75,14 @@ export class AppModule implements NestModule {
         { path: '/products', method: RequestMethod.DELETE },
         { path: '/customers', method: RequestMethod.GET },
         { path: '/customers/search', method: RequestMethod.GET },
+        { path: '/orders/search', method: RequestMethod.GET },
+        { path: '/orders', method: RequestMethod.GET },
+        { path: '/orders', method: RequestMethod.PATCH },
+        { path: '/orders', method: RequestMethod.DELETE },
+        { path: '/orders-items', method: RequestMethod.POST },
+        { path: '/orders-items', method: RequestMethod.GET },
+        { path: '/orders-items', method: RequestMethod.PATCH },
+        { path: '/orders-items', method: RequestMethod.DELETE },
       );
   }
 }

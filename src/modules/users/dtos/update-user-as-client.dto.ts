@@ -10,7 +10,7 @@ export class UpdateUserAsClientDTO {
   })
   @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @ApiPropertyOptional({
     title: 'password',
@@ -20,7 +20,7 @@ export class UpdateUserAsClientDTO {
   })
   @IsOptional()
   @IsString()
-  password: string;
+  password?: string;
 
   @ApiPropertyOptional({
     title: 'name',
@@ -30,5 +30,5 @@ export class UpdateUserAsClientDTO {
   })
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 }

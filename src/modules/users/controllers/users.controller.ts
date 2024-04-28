@@ -19,7 +19,7 @@ import { CreateUserDTO } from '../dtos/create-user.dto';
 import { UpdateUserAsClientDTO } from '../dtos/update-user-as-client.dto';
 import { CreateUserAsClientDTO } from '../dtos/create-user-as-client.dto';
 import { userType } from '@prisma/client';
-import { ConfirmSingUpDTO } from '../dtos/confirm-singn-up.dto';
+import { ConfirmSingUpDTO } from '../dtos/confirm-sign-up.dto';
 import { IsPublic } from 'src/modules/authentication/decorators/is-public.decorator';
 import { SearchUserDTO } from '../dtos/search-user.dto';
 import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
