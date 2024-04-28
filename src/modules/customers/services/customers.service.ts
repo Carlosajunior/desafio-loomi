@@ -33,7 +33,7 @@ export class CustomersService {
 
   async searchCustomers(data: SearchCustomerDTO) {
     try {
-      let customersSQLQuery = `SELECT * FROM "Customer"`;
+      let customersSQLQuery: string = `SELECT * FROM "Customer"`;
       const conditions: string[] = [];
 
       if (data.fullName)

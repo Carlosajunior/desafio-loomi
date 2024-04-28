@@ -59,7 +59,7 @@ export class UsersService {
 
   async searchUsers(data: SearchUserDTO) {
     try {
-      let usersSQLQuery = `SELECT * FROM "User"`;
+      let usersSQLQuery: string = `SELECT * FROM "User"`;
       const conditions: string[] = [];
 
       if (data.email) conditions.push(`"email" = '${data.email}'`);

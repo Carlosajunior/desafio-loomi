@@ -5,13 +5,11 @@ import {
   Body,
   Patch,
   Delete,
-  UseGuards,
   ValidationPipe,
   BadRequestException,
   Query,
 } from '@nestjs/common';
 import { OrdersService } from '../services/orders.service';
-import { AuthGuard } from 'src/modules/authentication/guards/authentication.guard';
 import { CreateOrderDTO } from '../dtos/create-order.dto';
 import { SearchOrderDTO } from '../dtos/search-order.dto';
 import { UpdateOrderDTO } from '../dtos/update-order.dto';
@@ -19,7 +17,6 @@ import { DeleteOrderDTO } from '../dtos/delete-order.dto';
 import { GetOrderDTO } from '../dtos/get-order.dto';
 
 @Controller('orders')
-@UseGuards(AuthGuard)
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 

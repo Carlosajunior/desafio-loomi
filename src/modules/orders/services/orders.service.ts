@@ -22,11 +22,12 @@ export class OrdersService {
   async createOrder(data: CreateOrderDTO) {
     try {
       const order = await this.ordersRepository.createOrder(data);
-      return await this.orderItemsService.createOrderItem({
+      await this.orderItemsService.createOrderItem({
         orderId: (order as unknown as Order).id,
         productId: data.productId,
         quantity: data.quantity,
       });
+      return order;
     } catch (error) {
       return new NotAcceptableException(error);
     }
@@ -42,7 +43,7 @@ export class OrdersService {
 
   async searchOrder(data: SearchOrderDTO) {
     try {
-      let OrderSQLQuery = `SELECT * FROM "Order"`;
+      let OrderSQLQuery: string = `SELECT * FROM "Order"`;
       const conditions: string[] = [];
 
       if (data.clientId) conditions.push(`"clientId" = '${data.clientId}'`);

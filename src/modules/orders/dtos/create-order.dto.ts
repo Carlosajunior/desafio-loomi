@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsUUID } from 'class-validator';
 
 export class CreateOrderDTO {
   @ApiProperty({
@@ -30,7 +30,7 @@ export class CreateOrderDTO {
     description:
       'Quantity of a product, to be inserted on a new order item, related to this order.',
   })
-  @IsUUID()
+  @IsNumber()
   @IsNotEmpty()
   quantity: number;
 }

@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
   ValidationPipe,
   Request,
 } from '@nestjs/common';
@@ -16,12 +15,10 @@ import { CreateCustomerDTO } from '../dtos/create-customer.dto';
 import { SearchCustomerDTO } from '../dtos/search-customer.dto';
 import { UpdateCustomerDTO } from '../dtos/update-customer-client.dto';
 import { DeleteCustomerDTO } from '../dtos/delete-customer.dto';
-import { AuthGuard } from 'src/modules/authentication/guards/authentication.guard';
 import { UpdateCustomerAsAdminDTO } from '../dtos/update-customer-as-admin.dto';
 import { GetCustomerDTO } from '../dtos/get-customer.dto';
 
 @Controller('customers')
-@UseGuards(AuthGuard)
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 

@@ -21,7 +21,7 @@ export class SearchOrderDTO {
   @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
-  page?: number;
+  page: number;
 
   @ApiProperty({
     title: 'records_per_page',
@@ -33,7 +33,7 @@ export class SearchOrderDTO {
   @Type(() => Number)
   @IsNumber()
   @IsNotEmpty()
-  records_per_page?: number;
+  records_per_page: number;
 
   @ApiPropertyOptional({
     title: 'date_start',

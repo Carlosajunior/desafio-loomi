@@ -68,6 +68,19 @@ export class OrderItemsRepository {
     }
   }
 
+  async updateOrderItemSubtotal(id: string, subtotal: number) {
+    try {
+      return await this.prisma.orderItem.update({
+        where: {
+          id: id,
+        },
+        data: { subtotal: subtotal },
+      });
+    } catch (error) {
+      return new NotAcceptableException(error);
+    }
+  }
+
   async deleteOrderItem(data: DeleteOrderItemDTO) {
     try {
       return await this.prisma.orderItem.delete({ where: { id: data.id } });

@@ -32,7 +32,7 @@ export class ProductsService {
 
   async searchProducts(data: SearchProductsDTO) {
     try {
-      let productsSQLQuery = `SELECT * FROM "Product"`;
+      let productsSQLQuery: string = `SELECT * FROM "Product"`;
       const conditions: string[] = [];
 
       if (data.name)
