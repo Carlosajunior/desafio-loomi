@@ -43,6 +43,18 @@ export class CustomersRepository {
     }
   }
 
+  async findCustomerByUserId(data: DeleteCustomerDTO) {
+    try {
+      return await this.prisma.customer.findUnique({
+        where: {
+          userId: data.userId,
+        },
+      });
+    } catch (error) {
+      return new NotFoundException(error);
+    }
+  }
+
   async listCustomers(customersSQLQuery: string) {
     try {
       const customers =
@@ -82,7 +94,7 @@ export class CustomersRepository {
     }
   }
 
-  async deleteCustomer(data: DeleteCustomerDTO) {
+  async deleteCustomer(data: { id: string }) {
     try {
       return await this.prisma.customer.delete({ where: { id: data.id } });
     } catch (error) {
