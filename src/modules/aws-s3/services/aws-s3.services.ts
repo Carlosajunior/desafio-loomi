@@ -1,6 +1,6 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { NotAcceptableException } from '@nestjs/common';
-import { awsS3Client } from 'src/config/aws-s3/aws-s3-client';
+import { awsS3Client } from '../../../config/aws-s3/aws-s3-client';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -15,7 +15,7 @@ export class AwsS3Service {
       });
 
       await awsS3Client.send(command);
-      return `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${data.fileName}`;
+      return `https://${process.env.AWS_S3_BUCKET_NAMEt}.s3.amazonaws.com/${data.fileName}`;
     } catch (error) {
       throw new NotAcceptableException(error);
     }

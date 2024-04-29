@@ -11,7 +11,7 @@ import { UpdateCustomerAsAdminDTO } from '../dtos/update-customer-as-admin.dto';
 import { GetCustomerDTO } from '../dtos/get-customer.dto';
 import { SearchCustomerDTO } from '../dtos/search-customer.dto';
 import { Customer } from '@prisma/client';
-import { UsersService } from 'src/modules/users/services/users.service';
+import { UsersService } from '../../users/services/users.service';
 
 @Injectable()
 export class CustomersService {

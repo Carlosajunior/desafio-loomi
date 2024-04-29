@@ -8,7 +8,7 @@ import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { ConfirmSingUpDTO } from '../dtos/confirm-sign-up.dto';
-import { MailService } from 'src/modules/email-service/email-service';
+import { MailService } from '../../email-service/email-service';
 import { SearchUserDTO } from '../dtos/search-user.dto';
 import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
 import { User } from '@prisma/client';
@@ -112,7 +112,7 @@ export class UsersService {
     }
   }
 
-  private async sendConfirmationEmail(email: string, id: string) {
+  async sendConfirmationEmail(email: string, id: string) {
     const message = process.env.EMAIL_CONFIRMATION_ENDPOINT + id;
     await this.mailService.enviarEmail(email, message, 'Confirmar cadastro');
   }
