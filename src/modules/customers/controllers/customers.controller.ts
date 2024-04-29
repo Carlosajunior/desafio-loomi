@@ -103,12 +103,14 @@ export class CustomersController {
   }
 
   @ApiOperation({
-    summary: `Endpoint to remove a customer's data from the database.`,
+    summary: `Endpoint to remove the current logged in customer's data from the database, also remove it's user's data.`,
   })
   @Delete()
   async deleteCustomer(@Request() req) {
     try {
-      return await this.customersService.deleteCustomer({ id: req.user.id });
+      return await this.customersService.deleteCustomer({
+        userId: req.user.id,
+      });
     } catch (error) {
       return new BadRequestException(error);
     }

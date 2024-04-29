@@ -10,10 +10,15 @@ import { DeleteCustomerDTO } from '../dtos/delete-customer.dto';
 import { UpdateCustomerAsAdminDTO } from '../dtos/update-customer-as-admin.dto';
 import { GetCustomerDTO } from '../dtos/get-customer.dto';
 import { SearchCustomerDTO } from '../dtos/search-customer.dto';
+import { Customer } from '@prisma/client';
+import { UsersService } from 'src/modules/users/services/users.service';
 
 @Injectable()
 export class CustomersService {
-  constructor(private readonly customersRepository: CustomersRepository) {}
+  constructor(
+    private readonly customersRepository: CustomersRepository,
+    private readonly userService: UsersService,
+  ) {}
 
   async createCustomer(data: CreateCustomerDTO, user_id: string) {
     try {
@@ -80,7 +85,16 @@ export class CustomersService {
 
   async deleteCustomer(data: DeleteCustomerDTO) {
     try {
-      return await this.customersRepository.deleteCustomer(data);
+      const customerId = (
+        (await this.customersRepository.findCustomerByUserId(
+          data,
+        )) as unknown as Customer
+      ).id;
+      const customer = await this.customersRepository.deleteCustomer({
+        id: customerId,
+      });
+      await this.userService.deleteUser({ id: data.userId });
+      return customer;
     } catch (error) {
       return new NotAcceptableException(error);
     }

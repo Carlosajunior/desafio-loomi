@@ -6,9 +6,9 @@ export class DeleteCustomerDTO {
     title: 'id',
     type: String,
     required: true,
-    description: 'Id of customer the to be deleted.',
+    description: 'Id of the user current logged in.',
   })
   @IsNotEmpty()
   @IsUUID()
-  id: string;
+  userId: string;
 }
