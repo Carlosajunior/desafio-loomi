@@ -4,6 +4,7 @@ import { SalesReportRepository } from '../repositories/sales-report.repository';
 import { GetSalesReportDTO } from '../dto/get-sales-report.dto';
 import { UpdateSalesReportDTO } from '../dto/update-sales-report.dto';
 import { DeleteSalesReportDTO } from '../dto/delete-sales-report.dto';
+import { createObjectCsvWriter } from 'csv-writer';
 
 @Injectable()
 export class SalesReportService {
@@ -53,7 +54,9 @@ export class SalesReportService {
         salesTotal = salesTotal + Number(saleReport.totaldevendas);
         soldProducts = soldProducts + Number(saleReport.quantidadevendida);
       }
-
+      const filePath: string =
+        'C:/Users/Carlos/Documents/desafio-loomi/sales-report.csv';
+      await this.writeSalesReportOnCSV(salesReportOnPeriod, filePath);
       return await this.salesReportRepository.createSalesReport({
         period: '' + data.date_start + ', ' + data.date_end,
         salesTotal: salesTotal,
@@ -87,6 +90,34 @@ export class SalesReportService {
       return await this.salesReportRepository.deleteSalesReport(data);
     } catch (error) {
       return new NotAcceptableException(error);
+    }
+  }
+
+  async writeSalesReportOnCSV(
+    salesReport: {
+      nomedoproduto: string;
+      preçodoproduto: number;
+      quantidadevendida: bigint;
+      totaldevendas: bigint;
+      valortotaldevendas: number;
+    }[],
+    filePath,
+  ) {
+    try {
+      const csvWriter = createObjectCsvWriter({
+        path: filePath,
+        header: [
+          { id: 'nomedoproduto', title: 'Nome do Produto' },
+          { id: 'preçodoproduto', title: 'Preço do Produto' },
+          { id: 'quantidadevendida', title: 'Quantidade Vendida' },
+          { id: 'totaldevendas', title: 'Total de Vendas' },
+          { id: 'valortotaldevendas', title: 'Valor Total de Vendas' },
+        ],
+      });
+
+      await csvWriter.writeRecords(salesReport);
+    } catch (error) {
+      throw new NotAcceptableException(error);
     }
   }
 }
