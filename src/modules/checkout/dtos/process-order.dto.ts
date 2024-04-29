@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsDateString, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
-export class ProccessOrderDTO {
+export class processOrderDTO {
   @ApiProperty({
     title: 'cardNumber',
     type: String,
     required: true,
-    description: "User's card number for payment proccess.",
+    description: "User's card number for payment process.",
   })
   @IsNotEmpty()
   @IsString()
@@ -17,7 +17,7 @@ export class ProccessOrderDTO {
     type: String,
     required: true,
     description:
-      "User's card expiration date for payment proccess. Must be on the format YYYY-MM-DD.",
+      "User's card expiration date for payment process. Must be on the format YYYY-MM-DD.",
   })
   @IsNotEmpty()
   @IsDateString()
@@ -27,7 +27,7 @@ export class ProccessOrderDTO {
     title: 'cvv',
     type: String,
     required: true,
-    description: "User's card cvv for payment proccess.",
+    description: "User's card cvv for payment process.",
   })
   @IsNotEmpty()
   @IsString()
@@ -37,7 +37,7 @@ export class ProccessOrderDTO {
     title: 'orderId',
     type: String,
     required: true,
-    description: 'Id of the order which payment will be proccessed.',
+    description: 'Id of the order which payment will be processed.',
   })
   @IsNotEmpty()
   @IsUUID()

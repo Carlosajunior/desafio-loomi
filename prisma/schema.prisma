@@ -68,8 +68,8 @@ model OrderItem {
 }
 
 model SalesReport {
-  id           String   @id @unique @default(uuid())
-  period       DateTime
+  id           String  @id @unique @default(uuid())
+  period       String
   salesTotal   Decimal
   soldProducts Int
   filePath     String

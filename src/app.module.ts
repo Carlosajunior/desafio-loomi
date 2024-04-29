@@ -22,6 +22,7 @@ import { OrderItemsModule } from './modules/order-items/order-items.module';
 import { ProductsModule } from './modules/products/products.module';
 import { PaymentServiceModule } from './modules/payment-service/payment-service.module';
 import { CheckoutModule } from './modules/checkout/checkout.module';
+import { SalesReportModule } from './modules/sales-report/sales-report.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -53,6 +54,7 @@ require('dotenv').config();
     OrderItemsModule,
     PaymentServiceModule,
     CheckoutModule,
+    SalesReportModule,
   ],
   controllers: [AppController],
   providers: [
@@ -87,6 +89,11 @@ export class AppModule implements NestModule {
         { path: '/orders-items', method: RequestMethod.GET },
         { path: '/orders-items', method: RequestMethod.PATCH },
         { path: '/orders-items', method: RequestMethod.DELETE },
+        { path: '/checkout/process-order', method: RequestMethod.POST },
+        { path: '/sales-report', method: RequestMethod.POST },
+        { path: '/sales-report', method: RequestMethod.GET },
+        { path: '/sales-report', method: RequestMethod.PATCH },
+        { path: '/sales-report', method: RequestMethod.DELETE },
       );
   }
 }
