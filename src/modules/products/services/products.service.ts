@@ -9,6 +9,7 @@ import { UpdateProductDTO } from '../dtos/update-product.dto';
 import { DeleteProductDTO } from '../dtos/delete-product.dto';
 import { SearchProductsDTO } from '../dtos/search-product.dto';
 import { GetProductDTO } from '../dtos/get-product';
+import { Product } from '@prisma/client';
 
 @Injectable()
 export class ProductsService {
@@ -75,6 +76,22 @@ export class ProductsService {
       return await this.productsRepository.deleteProduct(data);
     } catch (error) {
       return new NotAcceptableException(error);
+    }
+  }
+
+  async verifyProductAvailability(data: {
+    productId: string;
+    quantity: number;
+  }) {
+    try {
+      const productstockQuantity = (
+        (await this.productsRepository.detailProduct({
+          id: data.productId,
+        })) as unknown as Product
+      ).stockQuantity;
+      return data.quantity > productstockQuantity ? false : true;
+    } catch (error) {
+      return new NotFoundException(error);
     }
   }
 }

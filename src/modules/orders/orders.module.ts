@@ -5,6 +5,7 @@ import { OrdersRepository } from './repositories/order.repository';
 import { OrderItemsService } from '../order-items/services/order-items.service';
 import { OrderItemsRepository } from '../order-items/repositories/order-items.repository';
 import { ProductsRepository } from '../products/repositories/products.repository';
+import { ProductsService } from '../products/services/products.service';
 
 @Module({
   controllers: [OrdersController],
@@ -13,6 +14,7 @@ import { ProductsRepository } from '../products/repositories/products.repository
     OrdersRepository,
     OrderItemsService,
     OrderItemsRepository,
+    ProductsService,
     ProductsRepository,
   ],
 })

@@ -46,7 +46,7 @@ model Product {
 model Order {
   id          String      @id @unique @default(uuid())
   clientId    String
-  orderStatus OrderStatus @default(Em_preparacao)
+  orderStatus OrderStatus @default(Recebido)
   total       Decimal
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")

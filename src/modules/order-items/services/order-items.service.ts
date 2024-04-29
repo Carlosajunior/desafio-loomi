@@ -11,13 +11,14 @@ import { UpdateOrderItemDTO } from '../dtos/update-order-item.dto';
 import { DeleteOrderItemDTO } from '../dtos/delete-order-item.dto';
 import { Order, OrderItem, Product } from '@prisma/client';
 import { OrdersRepository } from 'src/modules/orders/repositories/order.repository';
-import { ProductsRepository } from 'src/modules/products/repositories/products.repository';
+import { ListOrderItemsByOrderId } from '../dtos/list-order-items-by-order-id.dto';
+import { ProductsService } from 'src/modules/products/services/products.service';
 
 @Injectable()
 export class OrderItemsService {
   constructor(
     private readonly orderItemsRepository: OrderItemsRepository,
-    private readonly productsRepository: ProductsRepository,
+    private readonly productsService: ProductsService,
     private readonly orderRepository: OrdersRepository,
   ) {}
 
@@ -28,6 +29,19 @@ export class OrderItemsService {
       )) as unknown as number;
 
       const subtotal: number = unitPrice * data.quantity;
+
+      const availability = await this.productsService.verifyProductAvailability(
+        {
+          productId: data.productId,
+          quantity: data.quantity,
+        },
+      );
+
+      if (!availability) {
+        throw new NotAcceptableException(
+          'Não há itens suficientes em estoque para atender esse item do pedido.',
+        );
+      }
 
       const orderItem: OrderItem =
         (await this.orderItemsRepository.createOrderItem(
@@ -44,7 +58,7 @@ export class OrderItemsService {
 
       return orderItem;
     } catch (error) {
-      return new NotAcceptableException(error);
+      throw new NotAcceptableException(error);
     }
   }
 
@@ -81,12 +95,33 @@ export class OrderItemsService {
     }
   }
 
+  async listOrderItemsByOrderId(data: ListOrderItemsByOrderId) {
+    try {
+      return await this.orderItemsRepository.listOrderItemsByOrderId(data);
+    } catch (error) {
+      return new NotFoundException(error);
+    }
+  }
+
   async updateOrderItem(data: UpdateOrderItemDTO) {
     try {
       const currentOrderItem: OrderItem =
         (await this.orderItemsRepository.detailOrderItem({
           id: data.id,
         })) as unknown as OrderItem;
+
+      const availability = await this.productsService.verifyProductAvailability(
+        {
+          productId: currentOrderItem.productId,
+          quantity: currentOrderItem.quantity,
+        },
+      );
+
+      if (!availability) {
+        return new NotAcceptableException(
+          'Não há itens suficientes em estoque para atender esse item do pedido.',
+        );
+      }
 
       if (data.quantity == currentOrderItem.quantity)
         return new NotAcceptableException('Não há alteração nos dados.');
@@ -164,7 +199,7 @@ export class OrderItemsService {
     try {
       return parseFloat(
         (
-          (await this.productsRepository.detailProduct({
+          (await this.productsService.detailProduct({
             id: productId,
           })) as unknown as Product
         ).price.toString(),
@@ -195,6 +230,48 @@ export class OrderItemsService {
         id: data.orderId,
         total: total,
       });
+    } catch (error) {
+      return new NotAcceptableException(error);
+    }
+  }
+
+  async updateProductsStockQuantity(data: { orderId: string }) {
+    try {
+      const orderItems = (await this.listOrderItemsByOrderId({
+        orderId: data.orderId,
+      })) as unknown as OrderItem[];
+
+      for (const orderItem of orderItems) {
+        try {
+          const availability =
+            await this.productsService.verifyProductAvailability({
+              productId: orderItem.productId,
+              quantity: orderItem.quantity,
+            });
+
+          if (!availability) {
+            return new NotAcceptableException(
+              'Não há itens suficientes em estoque para atender esse item do pedido.',
+            );
+          }
+
+          const productstockQuantity = (
+            (await this.productsService.detailProduct({
+              id: orderItem.productId,
+            })) as unknown as Product
+          ).stockQuantity;
+
+          const newProductStockQuantity =
+            productstockQuantity - orderItem.quantity;
+
+          await this.productsService.updateProduct({
+            id: orderItem.productId,
+            stockQuantity: newProductStockQuantity,
+          });
+        } catch (error) {
+          return new NotAcceptableException(error);
+        }
+      }
     } catch (error) {
       return new NotAcceptableException(error);
     }
