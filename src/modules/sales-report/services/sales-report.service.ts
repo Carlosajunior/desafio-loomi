@@ -4,11 +4,15 @@ import { SalesReportRepository } from '../repositories/sales-report.repository';
 import { GetSalesReportDTO } from '../dto/get-sales-report.dto';
 import { UpdateSalesReportDTO } from '../dto/update-sales-report.dto';
 import { DeleteSalesReportDTO } from '../dto/delete-sales-report.dto';
-import { createObjectCsvWriter } from 'csv-writer';
+import { createObjectCsvStringifier } from 'csv-writer';
+import { AwsS3Service } from 'src/modules/aws-s3/services/aws-s3.services';
 
 @Injectable()
 export class SalesReportService {
-  constructor(private readonly salesReportRepository: SalesReportRepository) {}
+  constructor(
+    private readonly salesReportRepository: SalesReportRepository,
+    private readonly awsS3Service: AwsS3Service,
+  ) {}
 
   async createSalesReport(data: CreateSalesReportDTO) {
     try {
@@ -54,17 +58,21 @@ export class SalesReportService {
         salesTotal = salesTotal + Number(saleReport.totaldevendas);
         soldProducts = soldProducts + Number(saleReport.quantidadevendida);
       }
-      const filePath: string =
-        'C:/Users/Carlos/Documents/desafio-loomi/sales-report.csv';
-      await this.writeSalesReportOnCSV(salesReportOnPeriod, filePath);
+
+      const fileBuffer = await this.writeSalesReportOnCSV(salesReportOnPeriod);
+
+      const fileUrl = await this.awsS3Service.uploadFileToS3({
+        fileBuffer: fileBuffer,
+        fileName: `sales-report-${data.date_start}-${data.date_end}.csv`,
+      });
+
       return await this.salesReportRepository.createSalesReport({
         period: '' + data.date_start + ', ' + data.date_end,
         salesTotal: salesTotal,
         soldProducts: soldProducts,
-        filePath: '',
+        filePath: fileUrl,
       });
     } catch (error) {
-      console.log(error);
       return new NotAcceptableException(error);
     }
   }
@@ -101,11 +109,9 @@ export class SalesReportService {
       totaldevendas: bigint;
       valortotaldevendas: number;
     }[],
-    filePath,
   ) {
     try {
-      const csvWriter = createObjectCsvWriter({
-        path: filePath,
+      const csvStringifier = createObjectCsvStringifier({
         header: [
           { id: 'nomedoproduto', title: 'Nome do Produto' },
           { id: 'preçodoproduto', title: 'Preço do Produto' },
@@ -115,7 +121,12 @@ export class SalesReportService {
         ],
       });
 
-      await csvWriter.writeRecords(salesReport);
+      const csvData =
+        csvStringifier.getHeaderString() +
+        '\n' +
+        csvStringifier.stringifyRecords(salesReport);
+
+      return Buffer.from(csvData, 'utf-8');
     } catch (error) {
       throw new NotAcceptableException(error);
     }
