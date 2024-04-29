@@ -1,9 +1,10 @@
-import { NotAcceptableException } from '@nestjs/common';
+import { NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { GetOrderItemDTO } from '../dtos/get-order-item.dto';
 import { OrderItem, PrismaClient } from '@prisma/client';
 import { CreateOrderItemDTO } from '../dtos/create-order-item.dto';
 import { DeleteOrderItemDTO } from '../dtos/delete-order-item.dto';
 import { UpdateOrderItemDTO } from '../dtos/update-order-item.dto';
+import { ListOrderItemsByOrderId } from '../dtos/list-order-items-by-order-id.dto';
 
 export class OrderItemsRepository {
   prisma = new PrismaClient();
@@ -43,6 +44,18 @@ export class OrderItemsRepository {
       return { OrderItems };
     } catch (error) {
       return new NotAcceptableException(error);
+    }
+  }
+
+  async listOrderItemsByOrderId(data: ListOrderItemsByOrderId) {
+    try {
+      return await this.prisma.orderItem.findMany({
+        where: {
+          orderId: data.orderId,
+        },
+      });
+    } catch (error) {
+      return new NotFoundException(error);
     }
   }
 

@@ -21,13 +21,17 @@ export class OrdersService {
 
   async createOrder(data: CreateOrderDTO) {
     try {
-      const order = await this.ordersRepository.createOrder(data);
+      const order = (await this.ordersRepository.createOrder(
+        data,
+      )) as unknown as Order;
+
       await this.orderItemsService.createOrderItem({
         orderId: (order as unknown as Order).id,
         productId: data.productId,
         quantity: data.quantity,
       });
-      return order;
+
+      return await this.ordersRepository.detailOrder({ id: order.id });
     } catch (error) {
       return new NotAcceptableException(error);
     }

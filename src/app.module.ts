@@ -20,6 +20,8 @@ import { CustomersModule } from './modules/customers/customers.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { OrderItemsModule } from './modules/order-items/order-items.module';
 import { ProductsModule } from './modules/products/products.module';
+import { PaymentServiceModule } from './modules/payment-service/payment-service.module';
+import { CheckoutModule } from './modules/checkout/checkout.module';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -49,6 +51,8 @@ require('dotenv').config();
     ProductsModule,
     OrdersModule,
     OrderItemsModule,
+    PaymentServiceModule,
+    CheckoutModule,
   ],
   controllers: [AppController],
   providers: [
