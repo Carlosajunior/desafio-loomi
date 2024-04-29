@@ -15,11 +15,16 @@ import { UpdateProductDTO } from '../dtos/update-product.dto';
 import { DeleteProductDTO } from '../dtos/delete-product.dto';
 import { SearchProductsDTO } from '../dtos/search-product.dto';
 import { GetProductDTO } from '../dtos/get-product';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, to create a new product, returning it's data.`,
+  })
   @Post()
   async createProduct(@Body() data: CreateProductDTO) {
     try {
@@ -29,6 +34,9 @@ export class ProductsController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, to make a search for products, that's paginated and can receive some of his properties to be used as filters on that search.`,
+  })
   @Get('search')
   async searchProducts(
     @Query(
@@ -47,6 +55,9 @@ export class ProductsController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, retrive a product's data given it's Id.`,
+  })
   @Get()
   async detailProduct(
     @Query(
@@ -65,6 +76,9 @@ export class ProductsController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, to update one or more product's properties given the new value of the property to be updated, returning the product's data updated.`,
+  })
   @Patch()
   async updateProduct(@Body() data: UpdateProductDTO) {
     try {
@@ -74,6 +88,9 @@ export class ProductsController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, to remove a product's data from the database.`,
+  })
   @Delete()
   async deleteProduct(@Body() data: DeleteProductDTO) {
     try {

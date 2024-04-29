@@ -1,5 +1,5 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
-import { processOrderDTO } from '../dtos/process-order.dto';
+import { ProcessOrderDTO } from '../dtos/process-order.dto';
 import { HttpService } from '@nestjs/axios';
 import { PaymentCredentialsDTO } from 'src/modules/payment-service/dtos/payment-credentials.dto';
 import { AxiosResponse } from 'axios';
@@ -17,7 +17,7 @@ export class CheckoutService {
     private readonly productsService: ProductsService,
   ) {}
 
-  async processOrder(data: processOrderDTO) {
+  async processOrder(data: ProcessOrderDTO) {
     try {
       const order = (await this.ordersService.detailOrder({
         id: data.orderId,

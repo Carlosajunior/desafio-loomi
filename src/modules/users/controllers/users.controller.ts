@@ -21,11 +21,14 @@ import { ConfirmSingUpDTO } from '../dtos/confirm-sign-up.dto';
 import { IsPublic } from 'src/modules/authentication/decorators/is-public.decorator';
 import { SearchUserDTO } from '../dtos/search-user.dto';
 import { FindUserByEmailDTO } from '../dtos/findUserByEmailAndPassword.dto';
+import { ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiExcludeEndpoint()
   @IsPublic()
   @Get('confirm-signup')
   async confirmSignUp(
@@ -46,6 +49,9 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, to create a new user of any type, returning it's data.`,
+  })
   @Post('admin')
   async createUser(@Body() createUserDTO: CreateUserDTO) {
     try {
@@ -55,6 +61,9 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint to create a new user that's a client, returning it's data.`,
+  })
   @Post()
   async createUserAsClient(
     @Body() createUserAsClientDTO: CreateUserAsClientDTO,
@@ -69,6 +78,9 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, retrive a user's data given it's e-mail.`,
+  })
   @Get()
   async searchUserByEmail(
     @Query(
@@ -87,6 +99,9 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, to make a search for users, that's paginated and can receive some of his properties to be used as filters on that search.`,
+  })
   @Get('search')
   async searchUser(
     @Query(
@@ -105,6 +120,9 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint to update client user's properties given the new value of the property to be updated, returning the user's data updated.`,
+  })
   @Patch()
   async updateUser(
     @Body() updateUserAsClientDTO: UpdateUserAsClientDTO,
@@ -120,6 +138,9 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint only accessible to users of type administrator. Allows the administrator to update the data of any user.`,
+  })
   @Patch('admin')
   async updateUserAsAdmin(@Body() updateUserDTO: UpdateUserDTO) {
     try {
@@ -129,6 +150,9 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint to remove a user's data from the database.`,
+  })
   @Delete()
   async deleteUser(@Request() req) {
     try {
@@ -138,6 +162,9 @@ export class UsersController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint only accessible to users of type administrator. Allows the administrator to delete any user.`,
+  })
   @Delete('admin')
   async deleteUserAsAdmin(@Body() data: DeleteUserDTO) {
     try {

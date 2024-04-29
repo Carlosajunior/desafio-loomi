@@ -15,11 +15,16 @@ import { SearchOrderItemDTO } from '../dtos/search-order-item.dto';
 import { GetOrderItemDTO } from '../dtos/get-order-item.dto';
 import { UpdateOrderItemDTO } from '../dtos/update-order-item.dto';
 import { DeleteOrderItemDTO } from '../dtos/delete-order-item.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('order-items')
 @Controller('order-items')
 export class OrderItemsController {
   constructor(private readonly orderItemsService: OrderItemsService) {}
 
+  @ApiOperation({
+    summary: `Endpoint to create a new order item, returning it's data.`,
+  })
   @Post()
   async createOrderItem(@Body() data: CreateOrderItemDTO) {
     try {
@@ -29,6 +34,9 @@ export class OrderItemsController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, to make a search for order items, that's paginated and can receive some of his properties to be used as filters on that search.`,
+  })
   @Get('search')
   async searchOrderItems(
     @Query(
@@ -47,6 +55,9 @@ export class OrderItemsController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, retrive a order item's data given it's Id.`,
+  })
   @Get()
   async detailOrderItem(
     @Query(
@@ -65,6 +76,9 @@ export class OrderItemsController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, to update one or more order item's properties given the new value of the property to be updated, returning the order item's data updated.`,
+  })
   @Patch()
   async updateOrderItem(@Body() data: UpdateOrderItemDTO) {
     try {
@@ -74,6 +88,9 @@ export class OrderItemsController {
     }
   }
 
+  @ApiOperation({
+    summary: `Endpoint accesible to administrators only, to remove a order item's data from the database.`,
+  })
   @Delete()
   async deleteOrderItem(@Body() data: DeleteOrderItemDTO) {
     try {
