@@ -1,10 +1,10 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
-import { ProccessOrderDTO } from '../dtos/process-order.dto';
+import { processOrderDTO } from '../dtos/process-order.dto';
 import { HttpService } from '@nestjs/axios';
 import { PaymentCredentialsDTO } from 'src/modules/payment-service/dtos/payment-credentials.dto';
 import { AxiosResponse } from 'axios';
 import { OrdersService } from 'src/modules/orders/services/orders.service';
-import { Order, OrderItem } from '@prisma/client';
+import { Order, OrderItem, OrderStatus } from '@prisma/client';
 import { OrderItemsService } from 'src/modules/order-items/services/order-items.service';
 import { ProductsService } from 'src/modules/products/services/products.service';
 
@@ -17,11 +17,17 @@ export class CheckoutService {
     private readonly productsService: ProductsService,
   ) {}
 
-  async proccessOrder(data: ProccessOrderDTO) {
+  async processOrder(data: processOrderDTO) {
     try {
       const order = (await this.ordersService.detailOrder({
         id: data.orderId,
       })) as unknown as Order;
+
+      if (
+        order.orderStatus == OrderStatus.Despachado ||
+        order.orderStatus == OrderStatus.Entregue
+      )
+        return new NotAcceptableException('Esse pedido já foi finalizado.');
 
       const orderItems = (await this.orderItemsService.listOrderItemsByOrderId({
         orderId: data.orderId,
