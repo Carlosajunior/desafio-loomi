@@ -5,7 +5,7 @@ import { GetSalesReportDTO } from '../dto/get-sales-report.dto';
 import { UpdateSalesReportDTO } from '../dto/update-sales-report.dto';
 import { DeleteSalesReportDTO } from '../dto/delete-sales-report.dto';
 import { createObjectCsvStringifier } from 'csv-writer';
-import { AwsS3Service } from 'src/modules/aws-s3/services/aws-s3.services';
+import { AwsS3Service } from '../../aws-s3/services/aws-s3.services';
 
 @Injectable()
 export class SalesReportService {

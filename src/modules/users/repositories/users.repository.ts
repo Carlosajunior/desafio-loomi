@@ -4,8 +4,9 @@ import { UpdateUserDTO } from '../dtos/update-user.dto';
 import { DeleteUserDTO } from '../dtos/delete-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { Injectable, NotAcceptableException } from '@nestjs/common';
-import { hashPassword } from 'src/utils/bcrypt.utils';
+import { hashPassword } from '../../../utils/bcrypt.utils';
 import { ConfirmSingUpDTO } from '../dtos/confirm-sign-up.dto';
+
 @Injectable()
 export class UserRepository {
   prisma = new PrismaClient();
