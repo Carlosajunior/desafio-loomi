@@ -15,7 +15,7 @@ export class AwsS3Service {
       });
 
       await awsS3Client.send(command);
-      return `https://${process.env.AWS_S3_BUCKET_NAMEt}.s3.amazonaws.com/${data.fileName}`;
+      return `https://${process.env.AWS_S3_BUCKET_NAME}.s3.amazonaws.com/${data.fileName}`;
     } catch (error) {
       throw new NotAcceptableException(error);
     }
